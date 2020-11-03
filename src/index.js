@@ -4,7 +4,7 @@ import React, { Component } from "react";
 const scrollStyle = (width, height = "3", bgcolor = "#F43059", duration = "1") => ({
   margin: 0,
   padding: 0,
-  position: "fixed",
+  position: "absolute",
   bottom: "-1px",
   right: 0,
   left: 0,
