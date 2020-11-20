@@ -1,5 +1,5 @@
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import React, { Component } from "react";
 
 const scrollStyle = (
   width,
@@ -22,51 +22,28 @@ const scrollStyle = (
   transitionTimingFunction: `ease-out`,
 });
 
-class ProgressBar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      width: 0,
-    };
-    this.Scrolling = this.Scrolling.bind(this);
-  }
+const ProgressBar = ({ height, bgcolor, duration }) => {
+  const [width, setWidth] = useState(0);
 
-  Scrolling() {
+  const onScroll = () => {
     const winScroll =
       document.body.scrollTop || document.documentElement.scrollTop;
     const height =
       document.documentElement.scrollHeight -
       document.documentElement.clientHeight;
     const scrolled = (winScroll / height) * 100;
-    if (height > 0) {
-      this.setState({ width: `${scrolled}%` });
-    } else {
-      this.setState({ width: 0 });
-    }
-  }
+    setWidth(height > 0 ? `${scrolled}%` : 0);
+  };
 
-  componentDidMount() {
-    try {
-      window.addEventListener("scroll", this.Scrolling);
-    } catch (oError) {
-      console.log(oError);
-    }
-  }
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll);
 
-  componentWillUnmount() {
-    try {
-      window.removeEventListener("scroll", this.Scrolling);
-    } catch (oError) {
-      console.log(oError);
-    }
-  }
-
-  render() {
-    const { width } = this.state;
-    const { height, bgcolor, duration } = this.props;
-    return <div style={scrollStyle(width, height, bgcolor, duration)} />;
-  }
-}
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+  return <div style={scrollStyle(width, height, bgcolor, duration)} />;
+};
 
 ProgressBar.propTypes = {
   height: PropTypes.number,
